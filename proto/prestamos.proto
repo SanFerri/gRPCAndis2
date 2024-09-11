@@ -1,0 +1,58 @@
+import "google/protobuf/empty.proto";
+
+syntax = "proto3";
+
+package prestamos;
+
+option csharp_namespace = "PrestamosService";
+
+// Define the messages for the request and response
+message Prestamo {
+    int64 id = 1;
+    int64 montoPrestamo = 2;
+    double interes = 3;
+    int32 cuotas = 4;
+    string fechainicio = 5;
+    int64 balance = 6;
+    int64 idCliente = 7;
+    bool pagado = 8;
+}
+
+message PrestamoRequest {
+    int64 id = 1;
+}
+
+message ClienteRequest {
+    int64 idCliente = 1;
+}
+
+message ActualizarPrestamoRequest {
+    int64 id = 1;
+    Prestamo prestamo = 2;
+}
+
+message PrestamoResponse {
+    Prestamo prestamo = 1;
+}
+
+message ListaPrestamosResponse {
+    repeated Prestamo prestamos = 1;
+}
+
+message EliminarPrestamoResponse {
+    bool success = 1;
+}
+
+message Empty {}
+
+// Define the gRPC service
+service PrestamoService {
+    rpc ObtenerTodos (Empty) returns (ListaPrestamosResponse);
+    rpc ObtenerPorId (PrestamoRequest) returns (PrestamoResponse);
+    rpc ObtenerPrestamosPorCliente (ClienteRequest) returns (ListaPrestamosResponse);
+    rpc ObtenerPrestamosPagados (Empty) returns (ListaPrestamosResponse);
+    rpc ObtenerPrestamosNoPagados (Empty) returns (ListaPrestamosResponse);
+    rpc GuardarPrestamo (Prestamo) returns (PrestamoResponse);
+    rpc ActualizarPrestamo (ActualizarPrestamoRequest) returns (PrestamoResponse);
+    rpc EliminarPrestamo (PrestamoRequest) returns (EliminarPrestamoResponse);
+}
